@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<h1>班级列表</h1>
+    <div>
+        <input type="button" id="id_add" value="添加">
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>标题</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for foo in class_list %}
+                <tr>
+                    <td>{{ foo.id }}</td>
+                    <td>{{ foo.caption }}</td>
+                    <td>
+                        <a class="td-edit" >编辑</a> |
+                        <a class="td-delete">删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <div class="modal hide">
+        <input type="text" placeholder="班级标题"/>
+        <input id="id_modal_cancel" type="button" value="取消"/>
+        <input id="id_1" type="button" value="确定"/>
+    </div>
+    <div class="shade hide"></div>
+    <div class="remove hide">
+        <input id="id_remove_cancel" type="button" value="取消"/>
+        <input id="id_2" type="button" value="确定"/>
+    </div>
+    <div class="edit hide">
+        <input id="id_edit_cancel" type="button" value="取消"/>
+        <input id="id_3" type="button" value="确定"/>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+    $(function () {
+        $('#item_classes').addClass('active');
+        bindAddEvent();
+        bindCancelEvent();
+        bindTDRemoveEvent();
+        bindEditEvent();
+    });
+    function bindAddEvent() {
+        $('#id_add').click(function () {
+            $('.modal, .shade').removeClass('hide')
+        });
+    }
+    function bindCancelEvent() {
+        $('#id_modal_cancel, #id_remove_cancel,#id_edit_cancel').click(function () {
+            $('.modal, .shade, .remove, .edit').addClass('hide')
+        });
+
+    }
+    function bindTDRemoveEvent() {
+        $('td .td-delete').click(function () {
+            $('.remove, .shade').removeClass('hide')
+        });
+    }
+    function bindEditEvent() {
+        $('td .td-edit').click(function () {
+            $('.edit, .shade').removeClass('hide')
+        })
+
+    }
+    </script>
+{% endblock %}

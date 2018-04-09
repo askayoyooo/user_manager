@@ -1,0 +1,19 @@
+<body>
+<form action="login.html" method = "post">
+    {% csrf_token %}
+    <div>
+        <lable for="user">用户名:</lable>
+        <input type="text" id="user" name="user">
+    </div>
+    <div>
+        <lable for="pwd">密码:</lable>
+        <input type="password" id="pwd" name="pwd">
+    </div>
+    <div>
+        <lable> </lable>
+        <input type="submit" value="登录">
+        <span>{{ message }}</span>
+    </div>
+
+</form>
+</body>
