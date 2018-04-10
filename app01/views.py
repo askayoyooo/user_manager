@@ -39,20 +39,29 @@ class Login(views.View):
             return render(request, 'login.html', {'message': message})
 
 
+@method_decorator(auth, name='dispatch')
+class Class(views.View):
+
+    def dispatch(self, request, *args, **kwargs):
+        ret = super(Class, self).dispatch(request, *args, **kwargs)
+        return ret
+
+    def get(self, request, *args, **kwargs):
+        user = request.session['user']
+        return render(request, 'addClass.html', {'user': user})
+
+    def post(self, request):
+        user = request.session['user']
+        caption = request.POST.get('caption')
+        if caption:
+            models.Classes.objects.create(caption=caption)
+            return redirect('classes.html')
 
 
 
 
 
-def auth(func):
-    def inner(request, *args, **kwargs):
-        print(type(request.session))
-        is_login = request.session['is_login']
-        if is_login:
-            return func(request, *args, **kwargs)
-        else:
-            return redirect('login.html')
-    return inner
+
 
 
 def login(request):
@@ -76,6 +85,10 @@ def login(request):
             message = "用户名账户密码错误!"
     obj = render(request, 'login.html', {'message': message})
     return obj
+
+
+
+
 
 
 def logout(request):
@@ -113,4 +126,18 @@ def handle_teacher(request):
     return render(request, 'teacher.html', {'user': user})
 
 
+@auth
+def handel_add_class(request):
+    user = request.session['user']
+    return render(request, 'addClass.html', {'user': user})
 
+
+
+@auth
+def delete_class(request):
+    user = request.session['user']
+    if request.method=="POST":
+        class_id = request.POST.get("class_id")
+        print(class_id)
+        models.Classes.objects.filter(id=class_id).delete()
+        return HttpResponse('OK')
