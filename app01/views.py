@@ -3,6 +3,7 @@ from django import views
 from app01 import models
 from django.utils.decorators import method_decorator
 # Create your views here.
+# http://ccbv.co.uk/
 
 
 def auth(func):
@@ -53,15 +54,12 @@ class Class(views.View):
     def post(self, request):
         user = request.session['user']
         caption = request.POST.get('caption')
+
         if caption:
             models.Classes.objects.create(caption=caption)
             return redirect('classes.html')
-
-
-
-
-
-
+        else:
+            return render(request, 'classes.html', {'user': user})
 
 
 def login(request):
@@ -70,8 +68,8 @@ def login(request):
     #     username='root',
     #     password='123456'
     # )
-    v = request.session
-    print(type(v))
+    # v = request.session
+    # print(type(v))
     if request.method == "POST":
         user = request.POST.get('user')
         pwd = request.POST.get('pwd')
@@ -106,9 +104,6 @@ def index(request):
 def handle_classes(request):
     user = request.session['user']
     class_list = models.Classes.objects.all()
-    # models.Classes.objects.create(caption='一班')
-    # models.Classes.objects.create(caption='二班')
-    # models.Classes.objects.create(caption='三班')
     return render(request,
                   'classes.html',
                   {'user': user, 'class_list': class_list})
@@ -141,3 +136,13 @@ def delete_class(request):
         print(class_id)
         models.Classes.objects.filter(id=class_id).delete()
         return HttpResponse('OK')
+
+
+@auth
+def edit_class(request):
+    user = request.session['user']
+    if request.method == 'POST':
+        class_id = request.POST.get('class_id')
+        caption = request.POST.get('caption')
+        models.Classes.objects.filter(id=class_id).update(caption=caption)
+        return render(request, 'editClass.html', {'user': user})
